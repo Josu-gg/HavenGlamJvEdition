@@ -7,7 +7,20 @@
     <groupId>org.example</groupId>
     <artifactId>HavenGlamJvEdition</artifactId>
     <version>1.0-SNAPSHOT</version>
+<dependencies>
+    <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter</artifactId>
+        <version>RELEASE</version>
+        <scope>test</scope>
+    </dependency>
 
+    <dependency>
+        <groupId>com.microsoft.sqlserver</groupId>
+        <artifactId>mssql-jdbc</artifactId>
+        <version>13.4.0.jre11</version>
+    </dependency>
+</dependencies>
     <properties>
         <maven.compiler.source>26</maven.compiler.source>
         <maven.compiler.target>26</maven.compiler.target>
