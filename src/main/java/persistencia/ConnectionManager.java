@@ -7,7 +7,7 @@ public class ConnectionManager
 
     private static final String STR_CONNECTION =
             "jdbc:sqlserver://JvHavenGlamDB.mssql.somee.com:1433;" +
-                    "databaseName=JvHavenGlamBD;" +
+                    "databaseName=JvHavenGlamDB;" +
                     "user=MarRM2_SQLLogin_1;" +
                     "password=njwsz9s7xd;" +
                     "encrypt=true;" +
