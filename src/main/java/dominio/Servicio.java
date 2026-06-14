@@ -1,4 +1,5 @@
 package dominio;
 
-public class Servicio {
+public class Servicio
+{
 }
