@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 
 public class EstadoDAO {
     private ConnectionManager conn;
@@ -75,7 +76,33 @@ public class EstadoDAO {
         }
         return res;
     }
+    public ArrayList<Estado> getAll() throws SQLException {
+        ArrayList<Estado> estados = new ArrayList<>();
+        try {
+            ps = conn.connect().prepareStatement(
+                    "Select IdEstado, NombreEstado, TipoEstado From Estado"
+            );
+            rs = ps.executeQuery();
 
+            while (rs.next()) {
+                Estado estado = new Estado();
+                estado.setIdEstado(rs.getInt(1));
+                estado.setNombreEstado(rs.getString(2));
+                estado.setTipoEstado(rs.getString(3));
+                estados.add(estado);
+            }
+            ps.close();
+            rs.close();
+        } catch (SQLException ex) {
+            throw new SQLException("Error al obtener los estados: "
+                    + ex.getMessage(), ex);
+        } finally {
+            ps = null;
+            rs = null;
+            conn.disconnect();
+        }
+        return estados;
+    }
     public boolean delete(Estado estado) throws SQLException {
         boolean res = false;
         try {

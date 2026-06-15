@@ -16,7 +16,10 @@ public class Estado
         NombreEstado = nombreEstado;
         TipoEstado = tipoEstado;
     }
-
+    @Override
+    public String toString() {
+        return NombreEstado;
+    }
     public int getIdEstado() {
         return idEstado;
     }
