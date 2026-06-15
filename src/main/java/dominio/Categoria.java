@@ -10,6 +10,10 @@ public class Categoria
     {
 
     }
+    @Override
+    public String toString() {
+        return NombreCategoria;
+    }
 
     public Categoria(int idCategoria, String nombreCategoria, int idEstado) {
         this.idCategoria = idCategoria;

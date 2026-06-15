@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 
 public class ServicioDAO {
     private ConnectionManager conn;
@@ -52,7 +53,37 @@ public class ServicioDAO {
         }
         return result;
     }
+    public ArrayList<Servicio> getAll() throws SQLException {
+        ArrayList<Servicio> servicios = new ArrayList<>();
+        try {
+            ps = conn.connect().prepareStatement(
+                    "Select IdServicio, NombreServicio, Descripcion, Precio, DuracionMinutos, IdCategoria, IdEstado From Servicio"
+            );
+            rs = ps.executeQuery();
 
+            while (rs.next()) {
+                Servicio servicio = new Servicio();
+                servicio.setIdServicio(rs.getInt(1));
+                servicio.setNombreServicio(rs.getString(2));
+                servicio.setDescripcion(rs.getString(3));
+                servicio.setPrecio(rs.getDouble(4));
+                servicio.setDuracionMinutos(rs.getTime(5));
+                servicio.setIdCategoria(rs.getInt(6));
+                servicio.setIdEstado(rs.getInt(7));
+                servicios.add(servicio);
+            }
+            ps.close();
+            rs.close();
+        } catch (SQLException ex) {
+            throw new SQLException("Error al obtener los servicios: "
+                    + ex.getMessage(), ex);
+        } finally {
+            ps = null;
+            rs = null;
+            conn.disconnect();
+        }
+        return servicios;
+    }
     public boolean update(Servicio servicio) throws SQLException {
         boolean res = false;
         try {
