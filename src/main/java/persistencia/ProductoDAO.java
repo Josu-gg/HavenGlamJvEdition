@@ -184,4 +184,38 @@ public class ProductoDAO {
         }
         return producto;
     }
+
+    public ArrayList<Producto> getAll() throws SQLException {
+        ArrayList<Producto> productos = new ArrayList<>();
+        try {
+            ps = conn.connect().prepareStatement(
+                    "Select IdProducto, NombreProducto, Descripcion, Precio, Stock, IdCategoria, IdEstado " +
+                            "From Producto"
+            );
+
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                Producto p = new Producto();
+                p.setIdProducto(rs.getInt(1));
+                p.setNombreProducto(rs.getString(2));
+                p.setDescripcion(rs.getString(3));
+                p.setPrecio(rs.getDouble(4));
+                p.setStock(rs.getInt(5));
+                p.setIdCategoria(rs.getInt(6));
+                p.setIdEstado(rs.getInt(7));
+                productos.add(p);
+            }
+            ps.close();
+            rs.close();
+        } catch (SQLException ex) {
+            throw new SQLException("Error al obtener los productos: "
+                    + ex.getMessage(), ex);
+        } finally {
+            ps = null;
+            rs = null;
+            conn.disconnect();
+        }
+        return productos;
+    }
 }

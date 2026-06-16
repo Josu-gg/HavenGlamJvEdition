@@ -14,6 +14,11 @@ public class Producto {
     {
 
     }
+    @Override
+    public String toString()
+    {
+        return nombreProducto;
+    }
 
     public Producto(int idProducto, String nombreProducto, String descripcion, double precio, int stock, int idCategoria, int idEstado) {
         this.idProducto = idProducto;
