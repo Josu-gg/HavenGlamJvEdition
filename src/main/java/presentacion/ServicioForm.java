@@ -26,7 +26,7 @@ public class ServicioForm {
     private JButton btneliminar;
     private JButton btnlimpiar;
     private JPanel Servicio;
-    private JPanel JpanelServicio;
+
 
     private ServicioDAO servicioDAO;
     private CategoriaDAO categoriaDAO;
@@ -80,7 +80,7 @@ public class ServicioForm {
                 cmbcategoria.addItem(categoria);
             }
         } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(JpanelServicio,
+            JOptionPane.showMessageDialog(Servicio,
                     "Error al cargar las categorias: " + ex.getMessage());
         }
     }
@@ -93,7 +93,7 @@ public class ServicioForm {
                 cmbestado.addItem(estado);
             }
         } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(JpanelServicio,
+            JOptionPane.showMessageDialog(Servicio,
                     "Error al cargar los estados: " + ex.getMessage());
         }
     }
@@ -128,7 +128,7 @@ public class ServicioForm {
             }
             dtgservicio.setModel(modelo);
         } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(JpanelServicio,
+            JOptionPane.showMessageDialog(Servicio,
                     "Error al cargar los servicios: " + ex.getMessage());
         }
     }
@@ -156,7 +156,7 @@ public class ServicioForm {
     private void guardar() {
         try {
             if (txtNombreServicio.getText().trim().isEmpty()) {
-                JOptionPane.showMessageDialog(JpanelServicio, "El nombre es obligatorio");
+                JOptionPane.showMessageDialog(Servicio, "El nombre es obligatorio");
                 return;
             }
 
@@ -173,22 +173,22 @@ public class ServicioForm {
             servicio.setIdEstado(estadoSeleccionado.getIdEstado());
 
             servicioDAO.create(servicio);
-            JOptionPane.showMessageDialog(JpanelServicio, "Servicio guardado correctamente");
+            JOptionPane.showMessageDialog(Servicio, "Servicio guardado correctamente");
             limpiarCampos();
             cargarTabla();
         } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(JpanelServicio, "Error al guardar: " + ex.getMessage());
+            JOptionPane.showMessageDialog(Servicio, "Error al guardar: " + ex.getMessage());
         }
     }
 
     private void modificar() {
         try {
             if (idServicioSeleccionado == -1) {
-                JOptionPane.showMessageDialog(JpanelServicio, "Selecciona un servicio de la tabla");
+                JOptionPane.showMessageDialog(Servicio, "Selecciona un servicio de la tabla");
                 return;
             }
             if (txtNombreServicio.getText().trim().isEmpty()) {
-                JOptionPane.showMessageDialog(JpanelServicio, "El nombre es obligatorio");
+                JOptionPane.showMessageDialog(Servicio, "El nombre es obligatorio");
                 return;
             }
 
@@ -207,21 +207,21 @@ public class ServicioForm {
 
             boolean actualizado = servicioDAO.update(servicio);
             if (actualizado) {
-                JOptionPane.showMessageDialog(JpanelServicio, "Servicio modificado correctamente");
+                JOptionPane.showMessageDialog(Servicio, "Servicio modificado correctamente");
             } else {
-                JOptionPane.showMessageDialog(JpanelServicio, "No se pudo modificar el servicio");
+                JOptionPane.showMessageDialog(Servicio, "No se pudo modificar el servicio");
             }
             limpiarCampos();
             cargarTabla();
         } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(JpanelServicio, "Error al modificar: " + ex.getMessage());
+            JOptionPane.showMessageDialog(Servicio, "Error al modificar: " + ex.getMessage());
         }
     }
 
     private void eliminar() {
         try {
             if (idServicioSeleccionado == -1) {
-                JOptionPane.showMessageDialog(JpanelServicio, "Selecciona un servicio de la tabla");
+                JOptionPane.showMessageDialog(Servicio, "Selecciona un servicio de la tabla");
                 return;
             }
 
@@ -230,14 +230,14 @@ public class ServicioForm {
 
             boolean eliminado = servicioDAO.delete(servicio);
             if (eliminado) {
-                JOptionPane.showMessageDialog(JpanelServicio, "Servicio eliminado correctamente");
+                JOptionPane.showMessageDialog(Servicio, "Servicio eliminado correctamente");
             } else {
-                JOptionPane.showMessageDialog(JpanelServicio, "No se pudo eliminar el servicio");
+                JOptionPane.showMessageDialog(Servicio, "No se pudo eliminar el servicio");
             }
             limpiarCampos();
             cargarTabla();
         } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(JpanelServicio, "Error al eliminar: " + ex.getMessage());
+            JOptionPane.showMessageDialog(Servicio, "Error al eliminar: " + ex.getMessage());
         }
     }
 
@@ -253,6 +253,6 @@ public class ServicioForm {
     }
 
     public JPanel getPanel() {
-        return JpanelServicio;
+        return Servicio;
     }
 }
