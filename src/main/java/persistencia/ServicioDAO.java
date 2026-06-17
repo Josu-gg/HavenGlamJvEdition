@@ -27,7 +27,7 @@ public class ServicioDAO {
             ps.setString(1, servicio.getNombreServicio());
             ps.setString(2, servicio.getDescripcion());
             ps.setDouble(3, servicio.getPrecio());
-            ps.setTime(4, servicio.getDuracionMinutos());
+            ps.setInt(4, servicio.getDuracionMinutos());
             ps.setInt(5, servicio.getIdCategoria());
             ps.setInt(6, servicio.getIdEstado());
 
@@ -67,7 +67,7 @@ public class ServicioDAO {
                 servicio.setNombreServicio(rs.getString(2));
                 servicio.setDescripcion(rs.getString(3));
                 servicio.setPrecio(rs.getDouble(4));
-                servicio.setDuracionMinutos(rs.getTime(5));
+                servicio.setDuracionMinutos(rs.getInt(5));
                 servicio.setIdCategoria(rs.getInt(6));
                 servicio.setIdEstado(rs.getInt(7));
                 servicios.add(servicio);
@@ -96,7 +96,7 @@ public class ServicioDAO {
             ps.setString(1, servicio.getNombreServicio());
             ps.setString(2, servicio.getDescripcion());
             ps.setDouble(3, servicio.getPrecio());
-            ps.setTime(4, servicio.getDuracionMinutos());
+            ps.setInt(4, servicio.getDuracionMinutos());
             ps.setInt(5, servicio.getIdCategoria());
             ps.setInt(6, servicio.getIdEstado());
             ps.setInt(7, servicio.getIdServicio());
@@ -153,7 +153,7 @@ public class ServicioDAO {
                 servicio.setNombreServicio(rs.getString(2));
                 servicio.setDescripcion(rs.getString(3));
                 servicio.setPrecio(rs.getDouble(4));
-                servicio.setDuracionMinutos(rs.getTime(5));
+                servicio.setDuracionMinutos(rs.getInt(5));
                 servicio.setIdCategoria(rs.getInt(6));
                 servicio.setIdEstado(rs.getInt(7));
             } else {

@@ -10,14 +10,13 @@ import persistencia.ServicioDAO;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.sql.SQLException;
-import java.sql.Time;
 import java.util.ArrayList;
 
 public class ServicioForm {
     private JTextField txtNombreServicio;
     private JTextField txtDescripcion;
     private JTextField txtPrecio;
-    private JTextField txtDuracionMinutos;
+    private JSpinner spDuracion;
     private JComboBox cmbcategoria;
     private JComboBox cmbestado;
     private JTable dtgservicio;
@@ -47,6 +46,9 @@ public class ServicioForm {
         categoriaDAO = new CategoriaDAO();
         estadoDAO = new EstadoDAO();
 
+        SpinnerNumberModel modeloDuracion = new SpinnerNumberModel(30, 1, 480, 5);
+        spDuracion.setModel(modeloDuracion);
+
         cargarComboCategoria();
         cargarComboEstado();
         cargarTabla();
@@ -63,7 +65,7 @@ public class ServicioForm {
                 txtNombreServicio.setText((String) dtgservicio.getValueAt(fila, 1));
                 txtDescripcion.setText((String) dtgservicio.getValueAt(fila, 2));
                 txtPrecio.setText(String.valueOf(dtgservicio.getValueAt(fila, 3)));
-                txtDuracionMinutos.setText(String.valueOf(dtgservicio.getValueAt(fila, 4)));
+                spDuracion.setValue(dtgservicio.getValueAt(fila, 4));
                 String nombreCategoria = (String) dtgservicio.getValueAt(fila, 5);
                 String nombreEstado = (String) dtgservicio.getValueAt(fila, 6);
                 seleccionarCategoriaEnCombo(nombreCategoria);
@@ -164,7 +166,7 @@ public class ServicioForm {
             servicio.setNombreServicio(txtNombreServicio.getText().trim());
             servicio.setDescripcion(txtDescripcion.getText().trim());
             servicio.setPrecio(Double.parseDouble(txtPrecio.getText().trim()));
-            servicio.setDuracionMinutos(Time.valueOf(txtDuracionMinutos.getText().trim()));
+            servicio.setDuracionMinutos((Integer) spDuracion.getValue());
 
             Categoria categoriaSeleccionada = (Categoria) cmbcategoria.getSelectedItem();
             servicio.setIdCategoria(categoriaSeleccionada.getIdCategoria());
@@ -197,7 +199,7 @@ public class ServicioForm {
             servicio.setNombreServicio(txtNombreServicio.getText().trim());
             servicio.setDescripcion(txtDescripcion.getText().trim());
             servicio.setPrecio(Double.parseDouble(txtPrecio.getText().trim()));
-            servicio.setDuracionMinutos(Time.valueOf(txtDuracionMinutos.getText().trim()));
+            servicio.setDuracionMinutos((Integer) spDuracion.getValue());
 
             Categoria categoriaSeleccionada = (Categoria) cmbcategoria.getSelectedItem();
             servicio.setIdCategoria(categoriaSeleccionada.getIdCategoria());
@@ -245,7 +247,7 @@ public class ServicioForm {
         txtNombreServicio.setText("");
         txtDescripcion.setText("");
         txtPrecio.setText("");
-        txtDuracionMinutos.setText("");
+        spDuracion.setValue(30);
         if (cmbcategoria.getItemCount() > 0) cmbcategoria.setSelectedIndex(0);
         if (cmbestado.getItemCount() > 0) cmbestado.setSelectedIndex(0);
         idServicioSeleccionado = -1;
