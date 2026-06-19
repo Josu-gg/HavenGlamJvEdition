@@ -51,6 +51,13 @@ public class LoginForm {
                         "Bienvenido",
                         "Login exitoso", JOptionPane.INFORMATION_MESSAGE);
 
+                MainForm mainForm = new MainForm();
+                mainForm.setVisible(true);
+
+                // Cerrar la ventana del login
+                JFrame ventanaActual = (JFrame) SwingUtilities.getWindowAncestor(LoginForm);
+                ventanaActual.dispose();
+
             } else {
                 JOptionPane.showMessageDialog(LoginForm,
                         "Correo o contraseña incorrectos",
