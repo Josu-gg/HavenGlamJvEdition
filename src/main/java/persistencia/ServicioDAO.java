@@ -27,7 +27,7 @@ public class ServicioDAO {
             ps.setString(1, servicio.getNombreServicio());
             ps.setString(2, servicio.getDescripcion());
             ps.setDouble(3, servicio.getPrecio());
-            ps.setInt(4, servicio.getDuracionMinutos());
+            ps.setTime(4, servicio.getDuracionMinutos());
             ps.setInt(5, servicio.getIdCategoria());
             ps.setInt(6, servicio.getIdEstado());
 
@@ -43,8 +43,7 @@ public class ServicioDAO {
                 }
             }
         } catch (SQLException ex) {
-            throw new SQLException("Error al crear el servicio: "
-                    + ex.getMessage(), ex);
+            throw new SQLException("Error al crear el servicio: " + ex.getMessage(), ex);
         } finally {
             if (ps != null) ps.close();
             ps = null;
@@ -53,6 +52,7 @@ public class ServicioDAO {
         }
         return result;
     }
+
     public ArrayList<Servicio> getAll() throws SQLException {
         ArrayList<Servicio> servicios = new ArrayList<>();
         try {
@@ -67,7 +67,7 @@ public class ServicioDAO {
                 servicio.setNombreServicio(rs.getString(2));
                 servicio.setDescripcion(rs.getString(3));
                 servicio.setPrecio(rs.getDouble(4));
-                servicio.setDuracionMinutos(rs.getInt(5));
+                servicio.setDuracionMinutos(rs.getTime(5));
                 servicio.setIdCategoria(rs.getInt(6));
                 servicio.setIdEstado(rs.getInt(7));
                 servicios.add(servicio);
@@ -75,8 +75,7 @@ public class ServicioDAO {
             ps.close();
             rs.close();
         } catch (SQLException ex) {
-            throw new SQLException("Error al obtener los servicios: "
-                    + ex.getMessage(), ex);
+            throw new SQLException("Error al obtener los servicios: " + ex.getMessage(), ex);
         } finally {
             ps = null;
             rs = null;
@@ -84,6 +83,7 @@ public class ServicioDAO {
         }
         return servicios;
     }
+
     public boolean update(Servicio servicio) throws SQLException {
         boolean res = false;
         try {
@@ -96,7 +96,7 @@ public class ServicioDAO {
             ps.setString(1, servicio.getNombreServicio());
             ps.setString(2, servicio.getDescripcion());
             ps.setDouble(3, servicio.getPrecio());
-            ps.setInt(4, servicio.getDuracionMinutos());
+            ps.setTime(4, servicio.getDuracionMinutos());
             ps.setInt(5, servicio.getIdCategoria());
             ps.setInt(6, servicio.getIdEstado());
             ps.setInt(7, servicio.getIdServicio());
@@ -106,8 +106,7 @@ public class ServicioDAO {
             }
             ps.close();
         } catch (SQLException ex) {
-            throw new SQLException("Error al modificar servicio: "
-                    + ex.getMessage(), ex);
+            throw new SQLException("Error al modificar servicio: " + ex.getMessage(), ex);
         } finally {
             ps = null;
             conn.disconnect();
@@ -128,8 +127,7 @@ public class ServicioDAO {
             }
             ps.close();
         } catch (SQLException ex) {
-            throw new SQLException("Error al eliminar un servicio: "
-                    + ex.getMessage(), ex);
+            throw new SQLException("Error al eliminar un servicio: " + ex.getMessage(), ex);
         } finally {
             ps = null;
             conn.disconnect();
@@ -153,7 +151,7 @@ public class ServicioDAO {
                 servicio.setNombreServicio(rs.getString(2));
                 servicio.setDescripcion(rs.getString(3));
                 servicio.setPrecio(rs.getDouble(4));
-                servicio.setDuracionMinutos(rs.getInt(5));
+                servicio.setDuracionMinutos(rs.getTime(5));
                 servicio.setIdCategoria(rs.getInt(6));
                 servicio.setIdEstado(rs.getInt(7));
             } else {
@@ -162,8 +160,7 @@ public class ServicioDAO {
             ps.close();
             rs.close();
         } catch (SQLException ex) {
-            throw new SQLException("Error al obtener un servicio por id: "
-                    + ex.getMessage(), ex);
+            throw new SQLException("Error al obtener un servicio por id: " + ex.getMessage(), ex);
         } finally {
             ps = null;
             rs = null;

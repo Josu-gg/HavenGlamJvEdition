@@ -7,14 +7,14 @@ public class Servicio {
     private String nombreServicio;
     private String descripcion;
     private double precio;
-    private int duracionMinutos;
+    private Time duracionMinutos;
     private int idCategoria;
     private int idEstado;
 
     public Servicio() {}
 
     public Servicio(int idServicio, String nombreServicio, String descripcion,
-                    double precio, int  duracionMinutos, int idCategoria, int idEstado) {
+                    double precio, Time  duracionMinutos, int idCategoria, int idEstado) {
         this.idServicio = idServicio;
         this.nombreServicio = nombreServicio;
         this.descripcion = descripcion;
@@ -36,8 +36,8 @@ public class Servicio {
     public double getPrecio() { return precio; }
     public void setPrecio(double precio) { this.precio = precio; }
 
-    public int getDuracionMinutos() { return duracionMinutos; }
-    public void setDuracionMinutos(int duracionMinutos) { this.duracionMinutos = duracionMinutos; }
+    public Time getDuracionMinutos() { return duracionMinutos; }
+    public void setDuracionMinutos(Time duracionMinutos) { this.duracionMinutos = duracionMinutos; }
 
     public int getIdCategoria() { return idCategoria; }
     public void setIdCategoria(int idCategoria) { this.idCategoria = idCategoria; }

@@ -10,7 +10,10 @@ import persistencia.ServicioDAO;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.sql.SQLException;
+import java.sql.Time;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 public class ServicioForm {
     private JTextField txtNombreServicio;
@@ -26,12 +29,10 @@ public class ServicioForm {
     private JButton btnlimpiar;
     private JPanel Servicio;
 
-
     private ServicioDAO servicioDAO;
     private CategoriaDAO categoriaDAO;
     private EstadoDAO estadoDAO;
     private int idServicioSeleccionado = -1;
-
 
     public static void main(String[] args) {
         JFrame frame = new JFrame("ServicioForm");
@@ -46,8 +47,22 @@ public class ServicioForm {
         categoriaDAO = new CategoriaDAO();
         estadoDAO = new EstadoDAO();
 
-        SpinnerNumberModel modeloDuracion = new SpinnerNumberModel(30, 1, 480, 5);
+        // Valor inicial del spinner: 00:30 (30 minutos)
+        Calendar calInicial = Calendar.getInstance();
+        calInicial.set(Calendar.HOUR_OF_DAY, 0);
+        calInicial.set(Calendar.MINUTE, 30);
+        calInicial.set(Calendar.SECOND, 0);
+        calInicial.set(Calendar.MILLISECOND, 0);
+
+        // El modelo cambia de a MINUTO cuando usas las flechas sobre esa parte
+        SpinnerDateModel modeloDuracion = new SpinnerDateModel(
+                calInicial.getTime(), null, null, Calendar.MINUTE
+        );
         spDuracion.setModel(modeloDuracion);
+
+        // El editor solo MUESTRA hora:minuto, sin segundos
+        JSpinner.DateEditor editor = new JSpinner.DateEditor(spDuracion, "HH:mm");
+        spDuracion.setEditor(editor);
 
         cargarComboCategoria();
         cargarComboEstado();
@@ -65,7 +80,13 @@ public class ServicioForm {
                 txtNombreServicio.setText((String) dtgservicio.getValueAt(fila, 1));
                 txtDescripcion.setText((String) dtgservicio.getValueAt(fila, 2));
                 txtPrecio.setText(String.valueOf(dtgservicio.getValueAt(fila, 3)));
-                spDuracion.setValue(dtgservicio.getValueAt(fila, 4));
+
+                // Time extiende de Date, así que se puede pasar directo al spinner
+                Object valorDuracion = dtgservicio.getValueAt(fila, 4);
+                if (valorDuracion instanceof Time) {
+                    spDuracion.setValue(new Date(((Time) valorDuracion).getTime()));
+                }
+
                 String nombreCategoria = (String) dtgservicio.getValueAt(fila, 5);
                 String nombreEstado = (String) dtgservicio.getValueAt(fila, 6);
                 seleccionarCategoriaEnCombo(nombreCategoria);
@@ -155,6 +176,16 @@ public class ServicioForm {
         }
     }
 
+    // Toma el valor del spinner (Date) y arma un Time con segundos siempre en 00
+    private Time obtenerDuracionDelSpinner() {
+        Date valorSpinner = (Date) spDuracion.getValue();
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(valorSpinner);
+        int horas = cal.get(Calendar.HOUR_OF_DAY);
+        int minutos = cal.get(Calendar.MINUTE);
+        return Time.valueOf(String.format("%02d:%02d:00", horas, minutos));
+    }
+
     private void guardar() {
         try {
             if (txtNombreServicio.getText().trim().isEmpty()) {
@@ -166,7 +197,7 @@ public class ServicioForm {
             servicio.setNombreServicio(txtNombreServicio.getText().trim());
             servicio.setDescripcion(txtDescripcion.getText().trim());
             servicio.setPrecio(Double.parseDouble(txtPrecio.getText().trim()));
-            servicio.setDuracionMinutos((Integer) spDuracion.getValue());
+            servicio.setDuracionMinutos(obtenerDuracionDelSpinner());
 
             Categoria categoriaSeleccionada = (Categoria) cmbcategoria.getSelectedItem();
             servicio.setIdCategoria(categoriaSeleccionada.getIdCategoria());
@@ -199,7 +230,7 @@ public class ServicioForm {
             servicio.setNombreServicio(txtNombreServicio.getText().trim());
             servicio.setDescripcion(txtDescripcion.getText().trim());
             servicio.setPrecio(Double.parseDouble(txtPrecio.getText().trim()));
-            servicio.setDuracionMinutos((Integer) spDuracion.getValue());
+            servicio.setDuracionMinutos(obtenerDuracionDelSpinner());
 
             Categoria categoriaSeleccionada = (Categoria) cmbcategoria.getSelectedItem();
             servicio.setIdCategoria(categoriaSeleccionada.getIdCategoria());
@@ -247,7 +278,14 @@ public class ServicioForm {
         txtNombreServicio.setText("");
         txtDescripcion.setText("");
         txtPrecio.setText("");
-        spDuracion.setValue(30);
+
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 30);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        spDuracion.setValue(cal.getTime());
+
         if (cmbcategoria.getItemCount() > 0) cmbcategoria.setSelectedIndex(0);
         if (cmbestado.getItemCount() > 0) cmbestado.setSelectedIndex(0);
         idServicioSeleccionado = -1;
