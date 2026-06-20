@@ -112,7 +112,7 @@ public class ProductoDAO {
         return res;
     }
 
-    public ArrayList<Producto> search(Producto producto) throws SQLException {
+    public ArrayList<Producto> search(String nombre) throws SQLException {
         ArrayList<Producto> productos = new ArrayList<>();
         try {
             ps = conn.connect().prepareStatement(
@@ -121,7 +121,7 @@ public class ProductoDAO {
                             "Where NombreProducto Like ?"
             );
 
-            ps.setString(1, "%" + producto.getNombreProducto() + "%");
+            ps.setString(1, "%" + nombre + "%");
 
             rs = ps.executeQuery();
 

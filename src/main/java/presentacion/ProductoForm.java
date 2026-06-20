@@ -32,6 +32,8 @@ public class ProductoForm {
     private JButton btnEliminar;
     private JButton btnLimpiar;
     private JButton btnGuardar;
+    private JButton btnBuscar;
+    private JTextField txtBuscar;
 
     private ProductoDAO productoDAO;
     private CategoriaDAO categoriaDAO;
@@ -59,6 +61,7 @@ public class ProductoForm {
         btnModificar.addActionListener(e -> modificar());
         btnEliminar.addActionListener(e -> eliminar());
         btnLimpiar.addActionListener(e -> limpiarCampos());
+        btnBuscar.addActionListener(e -> buscar());
 
         dtgProducto.getSelectionModel().addListSelectionListener(e -> {
             int fila = dtgProducto.getSelectedRow();
@@ -104,40 +107,55 @@ public class ProductoForm {
 
     private void cargarTabla() {
         try {
-            DefaultTableModel modelo = new DefaultTableModel();
-            modelo.addColumn("Id");
-            modelo.addColumn("Nombre");
-            modelo.addColumn("Descripcion");
-            modelo.addColumn("Precio");
-            modelo.addColumn("Stock");
-            modelo.addColumn("Categoria");
-            modelo.addColumn("Estado");
-
             ArrayList<Producto> productos = productoDAO.getAll();
-            for (Producto producto : productos) {
-                Categoria categoria = categoriaDAO.getById(producto.getIdCategoria());
-                Estado estado = estadoDAO.getById(producto.getIdEstado());
-
-                String nombreCategoria = (categoria != null) ? categoria.getNombreCategoria() : "";
-                String nombreEstado = (estado != null) ? estado.getNombreEstado() : "";
-
-                modelo.addRow(new Object[]{
-                        producto.getIdProducto(),
-                        producto.getNombreProducto(),
-                        producto.getDescripcion(),
-                        producto.getPrecio(),
-                        producto.getStock(),
-                        nombreCategoria,
-                        nombreEstado
-                });
-            }
-            dtgProducto.setModel(modelo);
+            mostrarEnTabla(productos);
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(Producto,
                     "Error al cargar los productos: " + ex.getMessage());
         }
     }
 
+    private void buscar() {
+        try {
+            String texto = txtBuscar.getText().trim();
+            ArrayList<Producto> productos = texto.isEmpty()
+                    ? productoDAO.getAll()
+                    : productoDAO.search(texto);
+            mostrarEnTabla(productos);
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(Producto, "Error al buscar: " + ex.getMessage());
+        }
+    }
+
+    private void mostrarEnTabla(ArrayList<Producto> productos) throws SQLException {
+        DefaultTableModel modelo = new DefaultTableModel();
+        modelo.addColumn("Id");
+        modelo.addColumn("Nombre");
+        modelo.addColumn("Descripcion");
+        modelo.addColumn("Precio");
+        modelo.addColumn("Stock");
+        modelo.addColumn("Categoria");
+        modelo.addColumn("Estado");
+
+        for (Producto producto : productos) {
+            Categoria categoria = categoriaDAO.getById(producto.getIdCategoria());
+            Estado estado = estadoDAO.getById(producto.getIdEstado());
+
+            String nombreCategoria = (categoria != null) ? categoria.getNombreCategoria() : "";
+            String nombreEstado = (estado != null) ? estado.getNombreEstado() : "";
+
+            modelo.addRow(new Object[]{
+                    producto.getIdProducto(),
+                    producto.getNombreProducto(),
+                    producto.getDescripcion(),
+                    producto.getPrecio(),
+                    producto.getStock(),
+                    nombreCategoria,
+                    nombreEstado
+            });
+        }
+        dtgProducto.setModel(modelo);
+    }
 
     private void seleccionarCategoriaEnCombo(String nombreCategoria) {
         for (int i = 0; i < cmbCategoria.getItemCount(); i++) {
@@ -246,7 +264,6 @@ public class ProductoForm {
         }
     }
 
-
     private void eliminar() {
         try {
             if (idProductoSeleccionado == -1) {
@@ -276,6 +293,7 @@ public class ProductoForm {
         txtDescripcion.setText("");
         txtPrecio.setText("");
         txtStock.setText("");
+        txtBuscar.setText("");
         if (cmbCategoria.getItemCount() > 0) cmbCategoria.setSelectedIndex(0);
         if (cmbEstado.getItemCount() > 0) cmbEstado.setSelectedIndex(0);
         idProductoSeleccionado = -1;
