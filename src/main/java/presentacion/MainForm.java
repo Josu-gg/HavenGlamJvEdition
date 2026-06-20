@@ -1,6 +1,7 @@
 package presentacion;
 
 import javax.swing.*;
+import java.awt.event.MouseAdapter;
 
 public class MainForm extends JFrame {
     private JPanel frmPrincipal;
@@ -27,6 +28,14 @@ public class MainForm extends JFrame {
             }
         });
 
+        //Menu Categoria
+        JMenu menuCategoria = new JMenu("Categoria");
+        menuBar.add(menuCategoria);
+        menuCategoria.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                abrirCategoria();
+            }
+        });
 
         // Menú Servicio
         JMenu menuServicio = new JMenu("Servicio");
@@ -39,12 +48,14 @@ public class MainForm extends JFrame {
 
     }
 
+
     private void abrirProducto() {
         JFrame frame = new JFrame("Producto");
         frame.setContentPane(new ProductoForm().getJpanelProducto());
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        frame.pack();
+        ///frame.pack();
         frame.setLocationRelativeTo(null);
+        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         frame.setVisible(true);
     }
 
@@ -52,11 +63,18 @@ public class MainForm extends JFrame {
         JFrame frame = new JFrame("Servicio");
         frame.setContentPane(new ServicioForm().getPanel());
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        frame.pack();
+       // frame.pack();
         frame.setLocationRelativeTo(null);
+        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         frame.setVisible(true);
     }
-
+    private void abrirCategoria() {
+        JFrame frame = new JFrame("Categoria");
+        frame.setContentPane(new CategoriaForm().getPanel1());
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        frame.setVisible(true);
+    }
     public static void main(String[] args) {
         MainForm mainForm = new MainForm();
         mainForm.setVisible(true);

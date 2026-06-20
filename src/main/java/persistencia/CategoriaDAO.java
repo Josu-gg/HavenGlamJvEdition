@@ -73,6 +73,35 @@ public class CategoriaDAO
         return res;
 
     }
+
+    public ArrayList<Categoria> search(String nombre) throws SQLException {
+        ArrayList<Categoria> categorias = new ArrayList<>();
+        try {
+            ps = conn.connect().prepareStatement(
+                    "Select IdCategoria, NombreCategoria, IdEstado " +
+                            "From Categoria Where NombreCategoria Like ?"
+            );
+            ps.setString(1, "%" + nombre + "%");
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                Categoria categoria = new Categoria();
+                categoria.setIdCategoria(rs.getInt(1));
+                categoria.setNombreCategoria(rs.getString(2));
+                categoria.setIdEstado(rs.getInt(3));
+                categorias.add(categoria);
+            }
+            ps.close();
+            rs.close();
+        } catch (SQLException ex) {
+            throw new SQLException("Error al buscar categorias: " + ex.getMessage(), ex);
+        } finally {
+            ps = null;
+            rs = null;
+            conn.disconnect();
+        }
+        return categorias;
+    }
     public ArrayList<Categoria> getAll() throws SQLException {
         ArrayList<Categoria> categorias = new ArrayList<>();
         try {

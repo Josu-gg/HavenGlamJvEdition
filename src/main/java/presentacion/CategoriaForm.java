@@ -8,7 +8,6 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import javax.swing.*;
 
 public class CategoriaForm {
     private JTextField txtNombre;
@@ -20,6 +19,8 @@ public class CategoriaForm {
     private JLabel lblNombreCategoria;
     private JLabel lblEstado;
     private JPanel JpanelCategoria;
+    private JTextField txtBuscar;
+    private JButton btnBuscar;
 
     private CategoriaDAO categoriaDAO;
     private EstadoDAO estadoDAO;
@@ -43,6 +44,7 @@ public class CategoriaForm {
         btnGuardar.addActionListener(e -> guardar());
         btnModificar.addActionListener(e -> modificar());
         btnEliminar.addActionListener(e -> eliminar());
+        btnBuscar.addActionListener(e -> buscar());   // <-- agregar esta línea
 
         dtgCategoria.getSelectionModel().addListSelectionListener(e -> {
             int fila = dtgCategoria.getSelectedRow();
@@ -70,26 +72,41 @@ public class CategoriaForm {
 
     private void cargarTabla() {
         try {
-            DefaultTableModel modelo = new DefaultTableModel();
-            modelo.addColumn("Id");
-            modelo.addColumn("Nombre");
-            modelo.addColumn("Estado");
-
             ArrayList<Categoria> categorias = categoriaDAO.getAll();
-            for (Categoria categoria : categorias) {
-                Estado estado = estadoDAO.getById(categoria.getIdEstado());
-                String nombreEstado = (estado != null) ? estado.getNombreEstado() : "";
-
-                modelo.addRow(new Object[]{
-                        categoria.getIdCategoria(),
-                        categoria.getNombreCategoria(),
-                        nombreEstado
-                });
-            }
-            dtgCategoria.setModel(modelo);
+            mostrarEnTabla(categorias);
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(JpanelCategoria,
                     "Error al cargar las categorias: " + ex.getMessage());
+        }
+    }
+
+    private void mostrarEnTabla(ArrayList<Categoria> categorias) throws SQLException {
+        DefaultTableModel modelo = new DefaultTableModel();
+        modelo.addColumn("Id");
+        modelo.addColumn("Nombre");
+        modelo.addColumn("Estado");
+
+        for (Categoria categoria : categorias) {
+            Estado estado = estadoDAO.getById(categoria.getIdEstado());
+            String nombreEstado = (estado != null) ? estado.getNombreEstado() : "";
+
+            modelo.addRow(new Object[]{
+                    categoria.getIdCategoria(),
+                    categoria.getNombreCategoria(),
+                    nombreEstado
+            });
+        }
+        dtgCategoria.setModel(modelo);
+    }
+    private void buscar() {
+        try {
+            String texto = txtBuscar.getText().trim();
+            ArrayList<Categoria> categorias = texto.isEmpty()
+                    ? categoriaDAO.getAll()
+                    : categoriaDAO.search(texto);
+            mostrarEnTabla(categorias);
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(JpanelCategoria, "Error al buscar: " + ex.getMessage());
         }
     }
 
@@ -184,6 +201,7 @@ public class CategoriaForm {
 
     private void limpiarCampos() {
         txtNombre.setText("");
+        txtBuscar.setText("");   // <-- agregar esta línea
         if (cmbEstado.getItemCount() > 0) {
             cmbEstado.setSelectedIndex(0);
         }
