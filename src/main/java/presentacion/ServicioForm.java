@@ -28,6 +28,8 @@ public class ServicioForm {
     private JButton btneliminar;
     private JButton btnlimpiar;
     private JPanel Servicio;
+    private JTextField txtBuscar;
+    private JButton btnBuscar;
 
     private ServicioDAO servicioDAO;
     private CategoriaDAO categoriaDAO;
@@ -54,13 +56,11 @@ public class ServicioForm {
         calInicial.set(Calendar.SECOND, 0);
         calInicial.set(Calendar.MILLISECOND, 0);
 
-        // El modelo cambia de a MINUTO cuando usas las flechas sobre esa parte
         SpinnerDateModel modeloDuracion = new SpinnerDateModel(
                 calInicial.getTime(), null, null, Calendar.MINUTE
         );
         spDuracion.setModel(modeloDuracion);
 
-        // El editor solo MUESTRA hora:minuto, sin segundos
         JSpinner.DateEditor editor = new JSpinner.DateEditor(spDuracion, "HH:mm");
         spDuracion.setEditor(editor);
 
@@ -72,6 +72,7 @@ public class ServicioForm {
         btnmodificar.addActionListener(e -> modificar());
         btneliminar.addActionListener(e -> eliminar());
         btnlimpiar.addActionListener(e -> limpiarCampos());
+        btnBuscar.addActionListener(e -> buscar());
 
         dtgservicio.getSelectionModel().addListSelectionListener(e -> {
             int fila = dtgservicio.getSelectedRow();
@@ -81,7 +82,6 @@ public class ServicioForm {
                 txtDescripcion.setText((String) dtgservicio.getValueAt(fila, 2));
                 txtPrecio.setText(String.valueOf(dtgservicio.getValueAt(fila, 3)));
 
-                // Time extiende de Date, así que se puede pasar directo al spinner
                 Object valorDuracion = dtgservicio.getValueAt(fila, 4);
                 if (valorDuracion instanceof Time) {
                     spDuracion.setValue(new Date(((Time) valorDuracion).getTime()));
@@ -123,37 +123,53 @@ public class ServicioForm {
 
     private void cargarTabla() {
         try {
-            DefaultTableModel modelo = new DefaultTableModel();
-            modelo.addColumn("Id");
-            modelo.addColumn("Nombre");
-            modelo.addColumn("Descripcion");
-            modelo.addColumn("Precio");
-            modelo.addColumn("Duracion");
-            modelo.addColumn("Categoria");
-            modelo.addColumn("Estado");
-
             ArrayList<Servicio> servicios = servicioDAO.getAll();
-            for (Servicio servicio : servicios) {
-                Categoria categoria = categoriaDAO.getById(servicio.getIdCategoria());
-                Estado estado = estadoDAO.getById(servicio.getIdEstado());
-                String nombreCategoria = (categoria != null) ? categoria.getNombreCategoria() : "";
-                String nombreEstado = (estado != null) ? estado.getNombreEstado() : "";
-
-                modelo.addRow(new Object[]{
-                        servicio.getIdServicio(),
-                        servicio.getNombreServicio(),
-                        servicio.getDescripcion(),
-                        servicio.getPrecio(),
-                        servicio.getDuracionMinutos(),
-                        nombreCategoria,
-                        nombreEstado
-                });
-            }
-            dtgservicio.setModel(modelo);
+            mostrarEnTabla(servicios);
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(Servicio,
                     "Error al cargar los servicios: " + ex.getMessage());
         }
+    }
+
+    private void buscar() {
+        try {
+            String texto = txtBuscar.getText().trim();
+            ArrayList<Servicio> servicios = texto.isEmpty()
+                    ? servicioDAO.getAll()
+                    : servicioDAO.search(texto);
+            mostrarEnTabla(servicios);
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(Servicio, "Error al buscar: " + ex.getMessage());
+        }
+    }
+
+    private void mostrarEnTabla(ArrayList<Servicio> servicios) throws SQLException {
+        DefaultTableModel modelo = new DefaultTableModel();
+        modelo.addColumn("Id");
+        modelo.addColumn("Nombre");
+        modelo.addColumn("Descripcion");
+        modelo.addColumn("Precio");
+        modelo.addColumn("Duracion");
+        modelo.addColumn("Categoria");
+        modelo.addColumn("Estado");
+
+        for (Servicio servicio : servicios) {
+            Categoria categoria = categoriaDAO.getById(servicio.getIdCategoria());
+            Estado estado = estadoDAO.getById(servicio.getIdEstado());
+            String nombreCategoria = (categoria != null) ? categoria.getNombreCategoria() : "";
+            String nombreEstado = (estado != null) ? estado.getNombreEstado() : "";
+
+            modelo.addRow(new Object[]{
+                    servicio.getIdServicio(),
+                    servicio.getNombreServicio(),
+                    servicio.getDescripcion(),
+                    servicio.getPrecio(),
+                    servicio.getDuracionMinutos(),
+                    nombreCategoria,
+                    nombreEstado
+            });
+        }
+        dtgservicio.setModel(modelo);
     }
 
     private void seleccionarCategoriaEnCombo(String nombreCategoria) {
@@ -176,7 +192,6 @@ public class ServicioForm {
         }
     }
 
-    // Toma el valor del spinner (Date) y arma un Time con segundos siempre en 00
     private Time obtenerDuracionDelSpinner() {
         Date valorSpinner = (Date) spDuracion.getValue();
         Calendar cal = Calendar.getInstance();
@@ -278,6 +293,7 @@ public class ServicioForm {
         txtNombreServicio.setText("");
         txtDescripcion.setText("");
         txtPrecio.setText("");
+        txtBuscar.setText("");
 
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.HOUR_OF_DAY, 0);
